@@ -73,13 +73,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let c of emails; let i = index">
-          <th scope="row">{{ c.id }}</th>
-          <td (click)="detalleCorreo(c)">{{ c.from.name }}</td>
-          <td (click)="detalleCorreo(c)"><i *ngIf="c?.attachments" class="fas fa-paperclip mr-4"></i>{{ c.subject }}
+        <tr *ngFor="let e of emails; let i = index">
+          <th scope="row">{{ e.id }}</th>
+          <td (click)="goToEmailDetail(e)">{{ e.from.name }}</td>
+          <td (click)="goToEmailDetail(e)"><i *ngIf="e?.attachments" class="fas fa-paperclip mr-4"></i>{{ e.subject }}
           </td>
-          <td (click)="detalleCorreo(c)">{{ c.date.date }}</td>
-          <td (click)="detalleCorreo(c)">{{ c.date.hour }}</td>
+          <td (click)="goToEmailDetail(e)">{{ e.date.date }}</td>
+          <td (click)="goToEmailDetail(e)">{{ e.date.hour }}</td>
           <td>
 
           </td>

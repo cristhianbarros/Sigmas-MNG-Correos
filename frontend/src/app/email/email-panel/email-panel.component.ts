@@ -158,8 +158,8 @@ export class EmailPanelComponent implements OnInit {
     this.obtenerCorreos(r);
   }
 
-  detalleCorreo(correo: IEmail) {
-    this.router.navigate(['/', 'correos', 'detalle', correo.id]);
+  goToEmailDetail(email: IEmail) {
+    this.router.navigate(['/', 'email', 'detail', email.id]);
   }
 
   eliminar(correo: IEmail) {

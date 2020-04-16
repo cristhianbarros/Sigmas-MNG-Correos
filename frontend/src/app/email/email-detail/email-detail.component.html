@@ -1,0 +1,136 @@
+<div *ngIf="cargando; else contenidoCorreo" class="d-flex justify-content-center">
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<ng-template #contenidoCorreo>
+  <div class="modal" id="modalDefault" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ modalParams.title }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{ modalParams.msj }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">{{ modalParams.buttons.cancel }}</button>
+          <button type="button" class="btn btn-danger"
+            (click)="modalActions(modalParams.action, email)">{{ modalParams.buttons.accept}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="navbar navbar-expand-lg alert-secondary">
+    <a class="navbar-brand" [routerLink]="['/', 'correos', 'panel', email?.state]">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto"></ul>
+      <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+        <div class="btn-group mr-2" role="group" aria-label="First group">
+          <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalDefault"
+            (click)="showModal(modalParamsReenviar)"><i class="fas fa-share-square"></i></button>
+          <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalDefault"
+            (click)="showModal(modalParamsEliminar)"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="row mt-2">
+    <div class="col-lg-12">
+      <h4 class="card-title">{{ email?.from.name + ' ' + email?.subject }}</h4>
+      <h6 class="card-title">Enviado: {{ email?.date.date + ' ' + email?.date.hour }}</h6>
+      <p class="card-subtitle mb-2 text-muted">De: {{ "<" + email?.from.email + ">" }}</p>
+      <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+        <li class="nav-item" data-toggle="tooltip" data-placement="top" title="Correo">
+          <a class="nav-link active" id="email-tab" data-toggle="tab" href="#email" role="tab" aria-controls="email"
+            aria-selected="true"><i class="fas fa-envelope-open-text"></i></a>
+        </li>
+        <li class="nav-item" *ngIf="showAddressTab" data-toggle="tooltip" data-placement="top" title="Para"
+          class="address">
+          <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address"
+            aria-selected="false"><i class="far fa-address-book"></i><span
+              class="badge badge-danger ml-1">{{ showAddressTab }}</span></a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="top" title="Para" class="cc">
+          <a class="nav-link" id="cc-tab" data-toggle="tab" href="#cc" role="tab" aria-controls="cc"
+            aria-selected="false"><i class="fas fa-users"></i><span
+              class="badge badge-danger ml-1">{{ showCcTab }}</span></a>
+        </li>
+        <li class="nav-item" *ngIf="showBccTab" data-toggle="tooltip" data-placement="top" title="Bcc">
+          <a class="nav-link" id="bcc-tab" data-toggle="tab" href="#bcc" role="tab" aria-controls="bcc"
+            aria-selected="false"><i class="fas fa-user-secret"></i><span
+              class="badge badge-danger ml-1">{{ showBccTab }}</span></a>
+        </li>
+        <li class="nav-item" *ngIf="showAttachmentsTab" data-toggle="tooltip" data-placement="top" title="Adjuntos">
+          <a class="nav-link" id="attachments-tab" data-toggle="tab" href="#attachments" role="tab"
+            aria-controls="attachments" aria-selected="false"><i class="fas fa-paperclip"></i><span
+              class="badge badge-danger ml-1">{{ showAttachmentsTab }}</span></a>
+        </li>
+        <li class="nav-item" *ngIf="showErrorsTab" data-toggle="tooltip" data-placement="top" title="Errores">
+          <a class="nav-link" id="errors-tab" data-toggle="tab" href="#errors" role="tab" aria-controls="errors"
+            aria-selected="false"><i class="fas fa-exclamation-triangle"></i><span
+              class="badge badge-danger ml-1">{{ showErrorsTab }}</span></a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active mt-2" id="email" role="tabpanel" aria-labelledby="email-tab">
+          <iframe class="justify-content-center embed-responsive-item w-100" frameBorder="0" [src]="urlSafe"></iframe>
+        </div>
+        <div class="tab-pane fade mt-2" id="address" role="tabpanel" aria-labelledby="address-tab"
+          *ngIf="showAddressTab">
+          <div class="card mb-2" *ngFor="let address of email?.address">
+            <div class="card-body">
+              <i class="fas fa-user-circle fa-5x float-left rounded-circle mr-2"></i>
+              <h5 class="card-title">{{ address.name }}</h5>
+              <p class="card-text">{{ address.email }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade mt-2" id="cc" role="tabpanel" aria-labelledby="cc-tab" *ngIf="showCcTab">
+          <div class="card mb-2" *ngFor="let cc of email?.cc">
+            <div class="card-body">
+              <i class="fas fa-user-circle fa-5x float-left rounded-circle mr-2"></i>
+              <h5 class="card-title">{{ cc.name }}</h5>
+              <p class="card-text">{{ cc.email }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade mt-2" id="bcc" role="tabpanel" aria-labelledby="bcc-tab" *ngIf="showBccTab">
+          <div class="card mb-2" *ngFor="let bcc of email?.bcc">
+            <div class="card-body">
+              <i class="fas fa-user-circle fa-5x float-left rounded-circle mr-2"></i>
+              <h5 class="card-title">{{ bcc.name }}</h5>
+              <p class="card-text">{{ bcc.email }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade mt-2" id="attachments" role="tabpanel" aria-labelledby="attachments-tab"
+          *ngIf="showAttachmentsTab">
+          <div class="row">
+            <div class="col-sm-4" *ngFor="let attachment of email?.attachments">
+              <div class="card mb-1">
+                <div class="card-body">
+                  <h5 class="card-title">{{ attachment.name }}</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">{{ attachment.filetype | slice:0:30 }}</h6>
+                  <a [href]="getSantizeUrl(email.id, attachment.id)" target="_blank"
+                    class="btn btn-primary btn-sm btn-block">Descargar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade mt-2" id="errors" role="tabpanel" aria-labelledby="errors-tab" *ngIf="showErrorsTab">
+          <div class="alert alert-danger mb-2" role="alert" *ngFor="let e of email?.errors">
+            {{ e.message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
