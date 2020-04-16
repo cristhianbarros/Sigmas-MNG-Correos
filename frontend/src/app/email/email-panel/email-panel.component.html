@@ -1,0 +1,90 @@
+<h2>Emails {{ title }}</h2>
+<hr />
+<div *ngIf="loading; else contenido" class="d-flex justify-content-center">
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<ng-template #contenido>
+  <div *ngIf="emailsQuantity == 0" class="text-center">
+    <b>No hay información registrada</b>
+  </div>
+
+  <div *ngIf="emailsQuantity > 0">
+    <nav aria-label="Paginacion">
+      <div class="row">
+        <div class="col-md-2">
+          <select class="form-control" name="paginacion" [(ngModel)]="cantidadPorPagina" (change)="cambiarPaginacion()">
+            <option *ngFor="let cantidaddPorPagina of cantidadesPorPagina" [value]="cantidaddPorPagina">
+              {{ cantidaddPorPagina }}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-success" (click)="recargar()">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div class="col-md-4 text-center">
+          <div class="row text-center">
+            Desde {{ metadatosPaginacion.desde }} hasta
+            {{ metadatosPaginacion.hasta }} de {{ metadatosPaginacion.total }} filas
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ul class="pagination">
+            <li [ngClass]="{ disabled: linksPaginacion.anterior === null }" class="page-item">
+              <a *ngIf="linksPaginacion.anterior !== null" class="page-link cursorClic"
+                (click)="cambiarPagina(linksPaginacion.anterior)"><i class="fas fa-angle-left"></i></a>
+              <span *ngIf="linksPaginacion.anterior === null" class="page-link"><i class="fas fa-angle-left"></i></span>
+            </li>
+
+            <li *ngIf="linksPaginacion.anterior !== null" class="page-item">
+              <a class="page-link cursorClic"
+                (click)="cambiarPagina(linksPaginacion.anterior)">{{ metadatosPaginacion.paginaActual - 1 }}</a>
+            </li>
+            <li *ngIf="linksPaginacion.primero !== null" class="page-item active">
+              <span class="page-link">
+                {{ metadatosPaginacion.paginaActual }}
+                <span class="sr-only">(current)</span>
+              </span>
+            </li>
+            <li *ngIf="linksPaginacion.siguiente !== null" class="page-item">
+              <a class="page-link cursorClic"
+                (click)="cambiarPagina(linksPaginacion.siguiente)">{{ metadatosPaginacion.paginaActual + 1 }}</a>
+            </li>
+
+            <li class="page-item" [ngClass]="{ disabled: linksPaginacion.siguiente === null }">
+              <a *ngIf="linksPaginacion.siguiente !== null" class="page-link cursorClic"
+                (click)="cambiarPagina(linksPaginacion.siguiente)"><i class="fas fa-angle-right"></i></a>
+              <span *ngIf="linksPaginacion.siguiente === null" class="page-link"><i
+                  class="fas fa-angle-right"></i></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col" colspan="4"></th>
+          <th scope="col">Opciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of emails; let i = index">
+          <th scope="row">{{ c.id }}</th>
+          <td (click)="detalleCorreo(c)">{{ c.from.name }}</td>
+          <td (click)="detalleCorreo(c)"><i *ngIf="c?.attachments" class="fas fa-paperclip mr-4"></i>{{ c.subject }}
+          </td>
+          <td (click)="detalleCorreo(c)">{{ c.date.date }}</td>
+          <td (click)="detalleCorreo(c)">{{ c.date.hour }}</td>
+          <td>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
