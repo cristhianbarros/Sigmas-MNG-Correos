@@ -1,0 +1,91 @@
+<h2>Templates</h2>
+
+<a [routerLink]="['/', 'email', 'templates']" routerLinkActive="active" class="btn btn-primary active"><i
+    class="fas fa-plus"></i> New Template
+</a>
+<hr />
+<div *ngIf="loading" class="d-flex justify-content-center">
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="!templates.length">
+  <b>No hay información registrada</b>
+</div>
+
+<div *ngIf="templates.length">
+  <nav aria-label="Paginacion">
+    <div class="row">
+      <div class="col-md-5">
+        <select class="selectPaginacion form-control" name="paginacion" [(ngModel)]="cantidadPorPagina"
+          (change)="cambiarPaginacion()">
+          <option *ngFor="let cantidaddPorPagina of cantidadesPorPagina" [value]="cantidaddPorPagina">
+            {{ cantidaddPorPagina }}</option>
+        </select>
+      </div>
+      <div class="col-md-4 text-center">
+        <div class="row text-center">
+          Desde {{ metadatosPaginacion.desde }} hasta
+          {{ metadatosPaginacion.hasta }} de {{ metadatosPaginacion.total }} filas
+        </div>
+      </div>
+      <div class="col-md-3">
+        <ul class="pagination">
+          <li [ngClass]="{ disabled: linksPaginacion.anterior === null }" class="page-item">
+            <a *ngIf="linksPaginacion.anterior !== null" class="page-link cursorClic"
+              (click)="cambiarPagina(linksPaginacion.anterior)"><i class="fas fa-angle-left"></i></a>
+            <span *ngIf="linksPaginacion.anterior === null" class="page-link"><i class="fas fa-angle-left"></i></span>
+          </li>
+
+          <li *ngIf="linksPaginacion.anterior !== null" class="page-item">
+            <a class="page-link cursorClic"
+              (click)="cambiarPagina(linksPaginacion.anterior)">{{ metadatosPaginacion.paginaActual - 1 }}</a>
+          </li>
+          <li *ngIf="linksPaginacion.primero !== null" class="page-item active">
+            <span class="page-link">
+              {{ metadatosPaginacion.paginaActual }}
+              <span class="sr-only">(current)</span>
+            </span>
+          </li>
+          <li *ngIf="linksPaginacion.siguiente !== null" class="page-item">
+            <a class="page-link cursorClic"
+              (click)="cambiarPagina(linksPaginacion.siguiente)">{{ metadatosPaginacion.paginaActual + 1 }}</a>
+          </li>
+
+          <li class="page-item" [ngClass]="{ disabled: linksPaginacion.siguiente === null }">
+            <a *ngIf="linksPaginacion.siguiente !== null" class="page-link cursorClic"
+              (click)="cambiarPagina(linksPaginacion.siguiente)"><i class="fas fa-angle-right"></i></a>
+            <span *ngIf="linksPaginacion.siguiente === null" class="page-link"><i class="fas fa-angle-right"></i></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Description</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let t of templates; let i = index">
+        <th scope="row">{{ t.id }}</th>
+        <td>{{ t.description }}</td>
+        <td>
+          <!--
+          <i title="Editar Plantilla" class="fas fa-pen optionsIcons cursorClic" (click)="editar(p)"></i>
+          <i title="Eliminar Plantilla" class="fas fa-trash-alt optionsIcons cursorClic" mwlConfirmationPopover
+            popoverTitle="Confirmación" popoverMessage="¿Deseas eliminar esta plantilla ?" confirmText="Si"
+            cancelText="No" (confirm)="eliminar(p)" confirmButtonType="success" cancelButtonType="danger"
+            [appendToBody]="true">
+          </i>
+          -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

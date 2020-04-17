@@ -50,10 +50,21 @@ export interface IEmail {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <i class="fas fa-clipboard-list"></i> Plantillas
+            <i class="fas fa-clipboard-list" routerLinkActive="active"></i>
+            Plantillas
             <div class="dropdown-menu dropdown-menu-lg-right">
-              <a class="dropdown-item"> Nueva</a>
-              <a class="dropdown-item"> Mis Plantillas</a>
+              <a
+                class="dropdown-item"
+                [routerLink]="['/', 'email', 'templates']"
+              >
+                Nueva</a
+              >
+              <a
+                class="dropdown-item"
+                [routerLink]="['/', 'email', 'templates', 'list', 'templates']"
+              >
+                Mis Plantillas</a
+              >
             </div>
           </li>
         </ul>

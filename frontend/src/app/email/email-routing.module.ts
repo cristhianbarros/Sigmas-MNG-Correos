@@ -11,7 +11,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: '/email/panel/send', pathMatch: 'full'},
       { path: 'panel/:state', component: EmailPanelComponent },
-      { path: 'detail/:id', component: EmailDetailComponent }
+      { path: 'detail/:id', component: EmailDetailComponent },
+      { path: 'templates', loadChildren: './email-templates/email-templates.module#EmailTemplatesModule'}
     ]
   },
 ];
