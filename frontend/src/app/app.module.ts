@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { EmailModule } from './email/email.module';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { MenuComponent } from './menu/menu.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     EmailModule
   ],
   providers: [],

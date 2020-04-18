@@ -9,17 +9,38 @@
     <span class="sr-only">Loading...</span>
   </div>
 </div>
+<!-- Delete Alert Modal -->
+<div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Delete Template</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+         ¿ Really do you want to delete this Template <b>{{ this.template?.description }}</b> ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="delete()">Delete it</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<div *ngIf="!templates.length">
+<div *ngIf=" !loading && !templates?.length" class="text-center">
   <b>No hay información registrada</b>
 </div>
 
-<div *ngIf="templates.length">
+<div *ngIf="templates?.length">
   <nav aria-label="Paginacion">
     <div class="row">
       <div class="col-md-5">
         <select class="selectPaginacion form-control" name="paginacion" [(ngModel)]="cantidadPorPagina"
-          (change)="cambiarPaginacion()">
+          (change)="changePagination()">
           <option *ngFor="let cantidaddPorPagina of cantidadesPorPagina" [value]="cantidaddPorPagina">
             {{ cantidaddPorPagina }}</option>
         </select>
@@ -34,13 +55,13 @@
         <ul class="pagination">
           <li [ngClass]="{ disabled: linksPaginacion.anterior === null }" class="page-item">
             <a *ngIf="linksPaginacion.anterior !== null" class="page-link cursorClic"
-              (click)="cambiarPagina(linksPaginacion.anterior)"><i class="fas fa-angle-left"></i></a>
+              (click)="changePage(linksPaginacion.anterior)"><i class="fas fa-angle-left"></i></a>
             <span *ngIf="linksPaginacion.anterior === null" class="page-link"><i class="fas fa-angle-left"></i></span>
           </li>
 
           <li *ngIf="linksPaginacion.anterior !== null" class="page-item">
             <a class="page-link cursorClic"
-              (click)="cambiarPagina(linksPaginacion.anterior)">{{ metadatosPaginacion.paginaActual - 1 }}</a>
+              (click)="changePage(linksPaginacion.anterior)">{{ metadatosPaginacion.paginaActual - 1 }}</a>
           </li>
           <li *ngIf="linksPaginacion.primero !== null" class="page-item active">
             <span class="page-link">
@@ -50,12 +71,12 @@
           </li>
           <li *ngIf="linksPaginacion.siguiente !== null" class="page-item">
             <a class="page-link cursorClic"
-              (click)="cambiarPagina(linksPaginacion.siguiente)">{{ metadatosPaginacion.paginaActual + 1 }}</a>
+              (click)="changePage(linksPaginacion.siguiente)">{{ metadatosPaginacion.paginaActual + 1 }}</a>
           </li>
 
           <li class="page-item" [ngClass]="{ disabled: linksPaginacion.siguiente === null }">
             <a *ngIf="linksPaginacion.siguiente !== null" class="page-link cursorClic"
-              (click)="cambiarPagina(linksPaginacion.siguiente)"><i class="fas fa-angle-right"></i></a>
+              (click)="changePage(linksPaginacion.siguiente)"><i class="fas fa-angle-right"></i></a>
             <span *ngIf="linksPaginacion.siguiente === null" class="page-link"><i class="fas fa-angle-right"></i></span>
           </li>
         </ul>
@@ -76,14 +97,8 @@
         <th scope="row">{{ t.id }}</th>
         <td>{{ t.description }}</td>
         <td>
-          <!--
-          <i title="Editar Plantilla" class="fas fa-pen optionsIcons cursorClic" (click)="editar(p)"></i>
-          <i title="Eliminar Plantilla" class="fas fa-trash-alt optionsIcons cursorClic" mwlConfirmationPopover
-            popoverTitle="Confirmación" popoverMessage="¿Deseas eliminar esta plantilla ?" confirmText="Si"
-            cancelText="No" (confirm)="eliminar(p)" confirmButtonType="success" cancelButtonType="danger"
-            [appendToBody]="true">
-          </i>
-          -->
+          <i title="Edit Template" class="fas fa-pen mr-2" (click)="edit(t)"></i>
+          <i title="Eliminar Plantilla" class="fas fa-trash-alt" data-toggle="modal" data-target="#deleteModal" (click)="showDeleteModal(t)"></i>
         </td>
       </tr>
     </tbody>

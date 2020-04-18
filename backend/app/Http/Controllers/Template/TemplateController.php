@@ -14,12 +14,15 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        $per_page = $request->has('per_page') ? (int) $request->per_page : 25;
+
         if(request()->has('all')){
             $templates = Template::all();
         } else {
-            $templates = Template::paginate(15);
+            $templates = Template::paginate($per_page);
         }
 
         return TemplateResource::collection($templates);

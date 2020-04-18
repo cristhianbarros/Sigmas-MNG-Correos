@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LinkPaginacion, MetadatoPaginacion } from 'src/app/models/model';
 import { ITemplate } from '../template/template.component';
 import { Router } from '@angular/router';
+import { TemplateService } from '../template.service';
 
 @Component({
   selector: 'app-templates',
@@ -9,6 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./templates.component.css'],
 })
 export class TemplatesComponent implements OnInit {
+  template: ITemplate;
   templates: ITemplate[];
   linksPaginacion: LinkPaginacion;
   metadatosPaginacion: MetadatoPaginacion;
@@ -17,9 +19,9 @@ export class TemplatesComponent implements OnInit {
   loading = true;
 
   constructor(
-    public router: Router
-  ) // public servicioPlantilla: PlantillasService,
-  // public alerta: AlertasService
+    public router: Router,
+    public templateService: TemplateService
+  )
   {}
 
   ngOnInit(): void {
@@ -40,33 +42,25 @@ export class TemplatesComponent implements OnInit {
       hasta: null,
     };
 
-    // this.obtenerPlantillas('');
+    this.getTemplates('');
   }
 
-  obtenerPlantillas(ruta?: string) {
-    /*
-    this.servicioPlantilla.obtenerPlantillasConPaginacion(ruta).subscribe(
+  getTemplates(ruta?: string) {
+    this.templateService.getTemplatesWithPag(ruta).subscribe(
       (data) => {
-        this.plantillas = data['templates'];
+        this.templates = data['templates'];
         if (data['links'] && data['meta']) {
           this.linksPaginacion = data['links'];
           this.metadatosPaginacion = data['meta'];
         }
-
-        this.cantidadPlantillas = this.plantillas.length;
-        this.cargando = false;
+        this.loading = false;
       },
-      (error) => {
-        this.alerta.mostrarNotificacion(
-          'error',
-          `Ha ocurrido un error listando las plantillas (${error})`
-        );
-      }
+      // TODO: Add error notification
+      (error) => { }
     );
-    */
   }
 
-  cambiarPaginacion() {
+  changePagination() {
     let ruta = this.metadatosPaginacion.ruta;
 
     ruta =
@@ -74,34 +68,33 @@ export class TemplatesComponent implements OnInit {
         ? ruta + '?per_page=' + this.metadatosPaginacion.total + '&page=1'
         : ruta + '?per_page=' + this.cantidadPorPagina + '&page=1';
 
-    this.obtenerPlantillas(ruta);
+    this.getTemplates(ruta);
   }
 
-  cambiarPagina(ruta: string) {
-    this.obtenerPlantillas(ruta);
+  changePage(ruta: string) {
+    ruta = `${ruta}&per_page=${this.cantidadPorPagina}`;
+    this.getTemplates(ruta);
   }
 
-  editar(template: ITemplate) {
-    this.router.navigate(['/', 'correos', 'plantillas', template.id]);
+  edit(template: ITemplate) {
+    this.router.navigate(['/', 'email', 'templates', template.id]);
   }
 
-  eliminar(template: ITemplate) {
-    /*
-    this.servicioPlantilla.eliminar(plantilla.id).subscribe(
-      (data) => {
-        this.obtenerPlantillas('');
-        this.alerta.mostrarNotificacion(
-          'success',
-          'Plantilla eliminada exitosamente'
-        );
-      },
-      (error) => {
-        this.alerta.mostrarNotificacion(
-          'error',
-          'Ha ocurrido un error eliminando una plantilla. Verifique que no se encuentre asociada a un Correo'
-        );
-      }
-    );
-    */
+  showDeleteModal(template: ITemplate) {
+    this.template = template;
+  }
+
+  delete() {
+    if (this.template.id) {
+      this.templateService.delete(this.template.id).subscribe(
+        (data) => {
+          this.getTemplates('');
+          // TODO: Add save notification
+        },
+        // TODO: Add error notification
+        (error) => {}
+      );
+    }
+    this.template = null;
   }
 }

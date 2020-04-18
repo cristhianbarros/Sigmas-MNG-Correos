@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { TemplateService } from '../template.service';
 
 export interface ITemplate {
   id: number;
@@ -19,33 +20,32 @@ export class TemplateComponent implements OnInit {
   templateId = null;
   loading = true;
   form: FormGroup;
-  btnAccept = 'Aceptar';
-  action = 'guardar';
+  btnAccept = 'Save';
+  action = 'save';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private templateService: TemplateService
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((paramMap) => {
       if (paramMap.has('id')) {
-        /*
-        this.plantillaId = parseInt(paramMap.get('plantillaId'), 0);
-        if (!isNaN(this.plantillaId)) {
-          this.plantillaService
-            .plantilllaXId(this.plantillaId)
-            .subscribe((plantilla) => {
-              this.buildForm(plantilla);
-              this.cargando = false;
-              this.btnNombre = 'Actualizar';
-              this.accion = 'actualizar';
+        this.templateId = parseInt(paramMap.get('id'), 0);
+        if (!isNaN(this.templateId)) {
+          this.templateService
+            .templateById(this.templateId)
+            .subscribe((template) => {
+              this.buildForm(template);
+              this.loading = false;
+              this.btnAccept = 'Update';
+              this.action = 'update';
             });
         } else {
-          this.plantillaId = null;
+          this.templateId = null;
         }
-        */
       }
     });
 
@@ -66,39 +66,29 @@ export class TemplateComponent implements OnInit {
   }
 
   onSubmit() {
-    this.guardar(this.form);
+    this.save(this.form);
   }
 
-  guardar(form: FormGroup) {
+  save(form: FormGroup) {
     const params = {
       id: this.templateId,
       description: form.get('description').value,
       styles: form.get('styles').value,
       footer: form.get('footer').value,
     };
-    /*
-    this.plantillaService.guardarOActualizar(params).subscribe(
-      (response: IPlantilla) => {
-        this.alerta.mostrarNotificacion(
-          'success',
-          'Plantilla guardada exitosamente'
-        );
+
+    this.templateService.saveOrUpdate(params).subscribe(
+      (response: ITemplate) => {
         this.router.navigate([
           '/',
-          'correos',
-          'plantillas',
-          'listado',
-          'plantillas',
+          'email',
+          'templates',
+          'list',
+          'templates',
         ]);
       },
-      (error) => {
-        this.alerta.mostrarNotificacion(
-          'error',
-          `Ha ocurrido un error al ${this.accion} una plantilla (${error})`
-        );
-      }
+      (error) => {}
     );
-    */
   }
 
   get isFormValid() {
