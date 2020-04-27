@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Email;
 
 use App\Email;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Email\EmailDetailResource;
 
 class EmailController extends Controller
 {
@@ -13,19 +14,16 @@ class EmailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $state = $request->query('state');
+        $per_page = $request->has('per_page') ? (int) $request->per_page : 25;
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        if($request->gas('all')) {
+            $emails = Email::where('state', '=', $state)->orderby('date', 'DESC');
+        } else {
+            $emails = Email::where('state', '=', $state)->orderB('date', 'DESC')->paginate($per_page);
+        }
     }
 
     /**
@@ -47,18 +45,7 @@ class EmailController extends Controller
      */
     public function show(Email $email)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Email  $email
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Email $email)
-    {
-        //
+        return EmailDetailResource($email);
     }
 
     /**
@@ -81,6 +68,8 @@ class EmailController extends Controller
      */
     public function destroy(Email $email)
     {
-        //
+        $email->destroy();
+
+        return EmailDetailResource($email);
     }
 }

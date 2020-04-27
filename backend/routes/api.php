@@ -18,4 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::apiResource('emails', 'Email\EmailController', [ 'only' => ['index', 'show', 'destroy'] ]);
 Route::apiResource('templates', 'Template\TemplateController');
+Route::apiResource('templates.emails', 'Template\TemplateEmailController', [ 'only' => [ 'store', 'destroy', 'update'] ]);
